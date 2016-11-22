@@ -1,0 +1,28 @@
+﻿<Page
+    x:Class="PizzaBot.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:PizzaBot"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Height="600">
+
+    <SplitView x:Name="MySplitView" DisplayMode="CompactInline"  IsPaneOpen="False" 
+               CompactPaneLength="50" OpenPaneLength="150" PaneBackground="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <SplitView.Pane>
+            <StackPanel Background="Black">
+                <Button x:Name="HamburgerButton" FontFamily="Segoe MDL2 Assets" Content="&#xE700;"
+                    Width="50" Height="50" Background="Transparent" Foreground="White" Click="HamburgerButton_Click" />
+                <StackPanel Orientation="Horizontal">
+                    <Button x:Name="MenuHome" FontFamily="Segoe MDL2 Assets" Content="&#xE710;"
+                    Width="50" Height="50" Background="Transparent" Foreground="White" Click="MenuHome_Click"/>
+                    <TextBlock Text="Create Person" FontSize="18" Foreground="White" VerticalAlignment="Center" />
+                </StackPanel>
+            </StackPanel>
+        </SplitView.Pane>
+        <SplitView.Content>
+            <Frame x:Name="MainFrame" />
+        </SplitView.Content>
+    </SplitView>
+</Page>
