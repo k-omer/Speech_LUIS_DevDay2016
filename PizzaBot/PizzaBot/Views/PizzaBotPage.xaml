@@ -11,13 +11,13 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <StackPanel>
-            <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Center" Orientation="Horizontal">
-                <TextBox Margin="5" BorderBrush="Blue" Width="300" HorizontalAlignment="Left"></TextBox>
-                <Button FontFamily="Segoe MDL2 Assets" Content="&#xE8BD;" Margin="5" HorizontalAlignment="Right"></Button>
-            </StackPanel>
-            <ScrollViewer VerticalAlignment="Top" Height="600">
+            <ScrollViewer VerticalAlignment="Top" Height="480" x:Name="ScrollChatViewer" Margin="0, 50, 0, 0">
                 <StackPanel x:Name="ChatList" HorizontalAlignment="Center" Width="400"/>
             </ScrollViewer>
+            <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Center" Orientation="Horizontal" Padding="5" Margin="5" >
+                <TextBox x:Name="TextMessage" Margin="5" BorderBrush="Blue" Width="300" HorizontalAlignment="Left"></TextBox>
+                <Button FontFamily="Segoe MDL2 Assets" Background="Black" Foreground="White" Content="&#xE8BD;" Margin="5" HorizontalAlignment="Right"></Button>
+            </StackPanel>
         </StackPanel>
 
     </Grid>

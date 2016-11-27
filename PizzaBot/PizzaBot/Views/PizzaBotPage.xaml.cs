@@ -59,9 +59,14 @@ namespace PizzaBot.Views
             }
         }
 
-        private void _speechRecognizer_HypothesisGenerated(SpeechRecognizer sender, SpeechRecognitionHypothesisGeneratedEventArgs args)
+        private async void _speechRecognizer_HypothesisGenerated(SpeechRecognizer sender, SpeechRecognitionHypothesisGeneratedEventArgs args)
         {
             _voiceResult = args.Hypothesis.Text;
+
+            await Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+            {
+                TextMessage.Text = args.Hypothesis.Text;
+            });
         }
 
         private void _speechRecognizer_StateChanged(SpeechRecognizer sender, SpeechRecognizerStateChangedEventArgs args)
@@ -82,6 +87,10 @@ namespace PizzaBot.Views
         {
             try
             {
+                Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+                {
+                    TextMessage.Text = "";
+                });
                 await _speechRecognizer.ContinuousRecognitionSession.CancelAsync();
             }
             catch(Exception e)
@@ -111,20 +120,23 @@ namespace PizzaBot.Views
 
             if (luisResult.Intents != null && luisResult.Intents.Any())
             {
-                switch (luisResult.Intents.First().Name)
+                switch (luisResult.TopScoringIntent.Name)
                 {
                     case "OrderPizza":
-                        sentence = "Sure, what ingredients do you want in your pizza ?";
+                        sentence = "Sure, which ingredients do you want in your pizza?";
                         break;
                     case "WhichIngredients":
                         sentence = OrderPizza(luisResult.Intents.First().Actions.First().Parameters.First().ParameterValues);
                         break;
                     case "ValidateOrder":
-                        sentence = "Your order is confirmed !";
+                        sentence = "Ok, your order is confirmed!";
                         break;
                     case "GetHello":
-                        sentence = "Hello there";
-                        break; 
+                        sentence = "Hello there ! What can I do for you?";
+                        break;
+                    case "GetGoodBye":
+                        sentence = "Have a nice day!";
+                        break;
                     default:
                         sentence = "I am not sure I can understand that";
                         break;
@@ -142,37 +154,53 @@ namespace PizzaBot.Views
         {
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                TextBlock _chatBubble = new TextBlock();
+                StackPanel stack = new StackPanel();
+                stack.Margin = new Thickness(10);
+                stack.Padding = new Thickness(15);
+                stack.Width = 300;
+                stack.BorderThickness = new Thickness(5, 5, 5, 5);
 
-                _chatBubble.Foreground = new SolidColorBrush(Windows.UI.Colors.BlueViolet);
-                _chatBubble.FontFamily = new FontFamily("Segoe UI");
-                _chatBubble.TextWrapping = TextWrapping.WrapWholeWords;
+                TextBlock chatText = new TextBlock();
+
+                chatText.Foreground = new SolidColorBrush(Windows.UI.Colors.BlueViolet);
+                chatText.FontFamily = new FontFamily("Segoe UI");
+                chatText.TextWrapping = TextWrapping.WrapWholeWords;
+                chatText.FontSize = 20;
 
                 if (right == true)
                 {
-                    _chatBubble.HorizontalAlignment = HorizontalAlignment.Right;
-                    _chatBubble.Foreground = new SolidColorBrush(Windows.UI.Colors.BlueViolet);
+                    chatText.HorizontalAlignment = HorizontalAlignment.Right;
+                    chatText.Foreground = new SolidColorBrush(Windows.UI.Colors.White);
+                    stack.Background = new SolidColorBrush(Windows.UI.Colors.Tomato);
+                    stack.HorizontalAlignment = HorizontalAlignment.Right;
                 }
                 else
                 {
-                    _chatBubble.HorizontalAlignment = HorizontalAlignment.Left;
-                    _chatBubble.Foreground = new SolidColorBrush(Windows.UI.Colors.Blue);
+                    chatText.HorizontalAlignment = HorizontalAlignment.Left;
+                    chatText.Foreground = new SolidColorBrush(Windows.UI.Colors.White);
+                    stack.Background = new SolidColorBrush(Windows.UI.Colors.OrangeRed);
+                    stack.HorizontalAlignment = HorizontalAlignment.Left;
                 }
 
-                _chatBubble.Text = message;
-                ChatList.Children.Insert(0,_chatBubble);
+                chatText.Text = message;
+                stack.Children.Add(chatText);
+                ChatList.Children.Add(stack);
+
+                ScrollChatViewer.Measure(ScrollChatViewer.RenderSize);
+                ScrollChatViewer.ScrollToVerticalOffset(ScrollChatViewer.ScrollableHeight);
             });
         }
 
         private string OrderPizza(ParameterValue[] parameterValues)
         {
-            string sentence = "You have ordered a pizza with ";
+            string sentence = "You have ordered a pizza with :\n";
+
             parameterValues.ToList().ForEach(p =>
             {
-                sentence += $"{p.Entity}";
+                sentence += $"\t- {p.Entity}\n";
             });
 
-            sentence += "\nAnything else you want me to add ?";
+            sentence += "\nAnything else ?";
 
             return sentence;
         }
