@@ -29,7 +29,6 @@ namespace PizzaBot.Views
         private LuisClient _luisClient;
         private string _voiceResult = "";
 
-
         public PizzaBotPage()
         {
             this.InitializeComponent();
@@ -51,7 +50,7 @@ namespace PizzaBot.Views
             try
             {
                 await _speechRecognizer.CompileConstraintsAsync();
-                await _speechRecognizer.ContinuousRecognitionSession.StartAsync();
+                await StartVoiceRecognitionAsync();
             }
             catch(Exception e)
             {
@@ -75,8 +74,11 @@ namespace PizzaBot.Views
             switch (args.State)
             {
                 case SpeechRecognizerState.SoundEnded:
-                    if(!string.IsNullOrEmpty(_voiceResult)) AddMessageInScreen(_voiceResult, true);
-                    SendToLuisAsync();
+                    if (!string.IsNullOrEmpty(_voiceResult))
+                    {
+                        AddMessageInScreen(_voiceResult, true);
+                        SendToLuisAsync();
+                    }
                     break;
                 case SpeechRecognizerState.Idle:
                     break;
@@ -90,8 +92,10 @@ namespace PizzaBot.Views
                 Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
                 {
                     TextMessage.Text = "";
+                    ButtonMicrophone.Background = new SolidColorBrush(Windows.UI.Colors.Black);
                 });
                 await _speechRecognizer.ContinuousRecognitionSession.CancelAsync();
+
             }
             catch(Exception e)
             {
@@ -99,11 +103,17 @@ namespace PizzaBot.Views
             }
         }
 
-        private async Task RestartVoiceRecognitionAsync()
+        private async Task StartVoiceRecognitionAsync()
         {
             try
             {
                 await _speechRecognizer.ContinuousRecognitionSession.StartAsync();
+                Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+                {
+                    TextMessage.Text = "";
+                    ButtonMicrophone.Background = new SolidColorBrush(Windows.UI.Colors.YellowGreen);
+                });
+
             }
             catch (Exception e)
             {
@@ -147,7 +157,7 @@ namespace PizzaBot.Views
             }
 
             _voiceResult = "";
-            await RestartVoiceRecognitionAsync();
+            await StartVoiceRecognitionAsync();
         }
 
         private async void AddMessageInScreen(string message, bool right)
@@ -162,7 +172,6 @@ namespace PizzaBot.Views
 
                 TextBlock chatText = new TextBlock();
 
-                chatText.Foreground = new SolidColorBrush(Windows.UI.Colors.BlueViolet);
                 chatText.FontFamily = new FontFamily("Segoe UI");
                 chatText.TextWrapping = TextWrapping.WrapWholeWords;
                 chatText.FontSize = 20;
@@ -203,6 +212,16 @@ namespace PizzaBot.Views
             sentence += "\nAnything else ?";
 
             return sentence;
+        }
+
+        private void ButtonSendMessage_Click(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(TextMessage.Text))
+            {
+                AddMessageInScreen(TextMessage.Text, true);
+                _voiceResult = TextMessage.Text;
+                SendToLuisAsync();
+            }
         }
     }
 }

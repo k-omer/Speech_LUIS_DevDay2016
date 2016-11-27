@@ -16,7 +16,8 @@
             </ScrollViewer>
             <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Center" Orientation="Horizontal" Padding="5" Margin="5" >
                 <TextBox x:Name="TextMessage" Margin="5" BorderBrush="Blue" Width="300" HorizontalAlignment="Left"></TextBox>
-                <Button FontFamily="Segoe MDL2 Assets" Background="Black" Foreground="White" Content="&#xE8BD;" Margin="5" HorizontalAlignment="Right"></Button>
+                <Button x:Name="ButtonSendMessage" Click="ButtonSendMessage_Click" FontFamily="Segoe MDL2 Assets" Background="Black" Foreground="White" Content="&#xE8BD;" Margin="5" HorizontalAlignment="Right"></Button>
+                <Button x:Name="ButtonMicrophone" FontFamily="Segoe MDL2 Assets" Background="Black" Foreground="White" Content="&#xE720;" Margin="5" HorizontalAlignment="Right"></Button>
             </StackPanel>
         </StackPanel>
 

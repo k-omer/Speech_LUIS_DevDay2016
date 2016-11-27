@@ -15,9 +15,9 @@
                 <Button x:Name="HamburgerButton" FontFamily="Segoe MDL2 Assets" Content="&#xE700;"
                     Width="50" Height="50" Background="Transparent" Foreground="White" Click="HamburgerButton_Click" />
                 <StackPanel Orientation="Horizontal">
-                    <Button x:Name="MenuHome" FontFamily="Segoe MDL2 Assets" Content="&#xE710;"
+                    <Button x:Name="MenuHome" FontFamily="Segoe MDL2 Assets" Content="&#xE90A;"
                     Width="50" Height="50" Background="Transparent" Foreground="White" Click="MenuHome_Click"/>
-                    <TextBlock Text="Create Person" FontSize="18" Foreground="White" VerticalAlignment="Center" />
+                    <TextBlock Text="PizzaBot" FontSize="18" Foreground="White" VerticalAlignment="Center" />
                 </StackPanel>
             </StackPanel>
         </SplitView.Pane>
